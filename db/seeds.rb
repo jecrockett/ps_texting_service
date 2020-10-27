@@ -5,3 +5,6 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+Provider.create(name: 'Provider 1', url: 'https://jo3kcwlvke.execute-api.us-west-2.amazonaws.com/dev/provider1')
+Provider.create(name: 'Provider 2', url: 'https://jo3kcwlvke.execute-api.us-west-2.amazonaws.com/dev/provider2')
