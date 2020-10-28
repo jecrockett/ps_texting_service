@@ -12,7 +12,7 @@ class MessageSender
     @payload = {
       to_number: message.recipient,
       message: message.content,
-      callback_url: "https://#{ENV['NGROK_DOMAIN']}/api/v1/delivery_status"
+      callback_url: "https://#{callback_domain}/api/v1/delivery_status"
     }
   end
 
@@ -41,5 +41,9 @@ class MessageSender
     # NOTE: consider returning two providers in an array sorted by priority instead to avoid hitting db
     @provider = Provider.where.not(id: provider.id).first
     send(is_retry: true)
+  end
+
+  def callback_domain
+    Rails.env.production? ? ENV['APP_DOMAIN'] : ENV['NGROK_DOMAIN']
   end
 end
