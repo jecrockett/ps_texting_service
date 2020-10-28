@@ -3,7 +3,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :messages, only: [:create, :index]
+      resources :messages, only: [:create]
+      post "delivery_status", to: "message_sends#delivery_status"
     end
   end
 end

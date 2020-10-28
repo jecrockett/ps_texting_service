@@ -1,5 +1,6 @@
 class MessageSender
-  attr_reader :message, :provider, :payload
+  attr_reader :message, :provider, :payload, :headers
+
   def self.send(message)
     new(message).send
   end
@@ -11,25 +12,34 @@ class MessageSender
     @payload = {
       to_number: message.recipient,
       message: message.content,
-      callback_url: "http://#{ENV['NGROK_HOST_URL']}/api/v1/delivery_status"
+      callback_url: "https://#{ENV['NGROK_HOST_URL']}/api/v1/delivery_status"
     }
   end
 
   def send(is_retry: false)
-    response = Faraday.post(@provider.url, @payload.to_json, @headers)
+    return unless provider
+
+    response = Faraday.post(provider.url, payload.to_json, headers)
 
     if response.status == 200
       json_response = JSON.parse(response.body)
       message.message_sends.create(provider: provider, provider_message_id: json_response['message_id'])
-    elsif response.status == 500 && !is_retry
-      puts 'Retrying secondary provider...'
-      # try other provider -- currently only two
-      # consider returning providers in an array sorted by priority instead to avoid hitting db
-      @provider = Provider.where.not(id: provider.id).first
-      send(is_retry: true)
-    else
-      raise StandardError, 'Sorry, something went wrong. Please try again later.'
+    elsif response.status == 500
+      record_send_error!
+      retry_send if !is_retry
     end
   end
 
+  private
+
+  def record_send_error!
+    message.message_sends.create(provider: provider, status: 'error')
+  end
+
+  def retry_send
+    puts 'Retrying secondary provider...'
+    # NOTE: consider returning two providers in an array sorted by priority instead to avoid hitting db
+    @provider = Provider.where.not(id: provider.id).first
+    send(is_retry: true)
+  end
 end
