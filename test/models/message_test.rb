@@ -14,4 +14,12 @@ class MessageTest < ActiveSupport::TestCase
       refute build(:message, recipient:'1231231234', content: nil).valid?
     end
   end
+
+  describe '#create_message_send' do
+    it 'calls the message sender after creation' do
+      MessageSender.expects(:call).once
+
+      create(:message)
+    end
+  end
 end

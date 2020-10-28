@@ -4,4 +4,10 @@ class Message < ApplicationRecord
 
   validates :content, presence: true
   validates :recipient, presence: true
+
+  after_create :send_message
+
+  def send_message
+    MessageSender.send(self)
+  end
 end

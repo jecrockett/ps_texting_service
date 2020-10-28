@@ -6,7 +6,7 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
 
     it 'saves a new messages with valid requests' do
       assert_difference -> { Message.count } do
-        post api_v1_messages_path(params: { message: valid_params})
+        post api_v1_messages_path(params: { message: valid_params })
       end
 
       assert_response :success
