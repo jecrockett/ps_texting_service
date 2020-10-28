@@ -110,6 +110,8 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.2)
+    minitest-bang (1.0.4)
+      minitest (>= 4.7.5)
     minitest-focus (1.2.1)
       minitest (>= 4, < 6)
     minitest-spec-rails (6.0.3)
@@ -232,6 +234,7 @@ DEPENDENCIES
   faraday
   jbuilder (~> 2.7)
   listen (~> 3.2)
+  minitest-bang
   minitest-focus
   minitest-spec-rails
   mocha

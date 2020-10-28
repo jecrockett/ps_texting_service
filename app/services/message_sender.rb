@@ -24,7 +24,7 @@ class MessageSender
     if response.status == 200
       json_response = JSON.parse(response.body)
       message.message_sends.create(provider: provider, provider_message_id: json_response['message_id'])
-    elsif response.status == 500
+    else
       record_send_error!
       retry_send if !is_retry
     end
@@ -37,7 +37,7 @@ class MessageSender
   end
 
   def retry_send
-    puts 'Retrying secondary provider...'
+    puts 'Retrying secondary provider...' unless Rails.env.test?
     # NOTE: consider returning two providers in an array sorted by priority instead to avoid hitting db
     @provider = Provider.where.not(id: provider.id).first
     send(is_retry: true)

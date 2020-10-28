@@ -1,4 +1,6 @@
 class Message < ApplicationRecord
+  attr_accessor :_skip_sending_message # attribute used in tests
+
   has_many :message_sends
   has_many :providers, through: :message_sends
 
@@ -6,7 +8,7 @@ class Message < ApplicationRecord
   validates :recipient, presence: true
   validate :valid_recipient
 
-  after_create :send_message
+  after_create :send_message, unless: :_skip_sending_message
 
   def sent?
     message_sends.any? {|send| send.provider_message_id.present? }

@@ -26,7 +26,12 @@ class MessageTest < ActiveSupport::TestCase
   describe '#send_message' do
     it 'calls the message sender after creation' do
       MessageSender.expects(:send).once
-      create(:message)
+      create(:message, :send_message)
+    end
+
+    it 'can be suppressed with the "_skip_sending_message" attribute' do
+      MessageSender.expects(:send).never
+      create(:message, _skip_sending_message: true)
     end
   end
 
