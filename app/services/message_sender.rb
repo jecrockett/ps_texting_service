@@ -12,7 +12,7 @@ class MessageSender
     @payload = {
       to_number: message.recipient,
       message: message.content,
-      callback_url: "https://#{ENV['NGROK_HOST_URL']}/api/v1/delivery_status"
+      callback_url: "https://#{ENV['NGROK_DOMAIN']}/api/v1/delivery_status"
     }
   end
 
